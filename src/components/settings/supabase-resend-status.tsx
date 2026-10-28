@@ -87,10 +87,10 @@ SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 # Resend Email Service Configuration
 RESEND_API_KEY=re_123456789abcdef...
-RESEND_FROM_EMAIL=Apex Fitness <onboarding@resend.dev>
+RESEND_FROM_EMAIL=Nikunj Fitness <onboarding@resend.dev>
 
 # Production App URL
-NEXT_PUBLIC_APP_URL=https://your-gym-domain.com`;
+NEXT_PUBLIC_APP_URL=https://nikunjfitness.com`;
 
   return (
     <div className="space-y-6">

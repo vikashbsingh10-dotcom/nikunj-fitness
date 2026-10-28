@@ -433,7 +433,7 @@ export function PaymentsManager({
             </div>
 
             <div className="text-center pt-2 text-[11px] text-slate-400">
-              Apex Performance Club • All rights reserved
+              Nikunj Fitness Club • All rights reserved
             </div>
 
             <DialogFooter>

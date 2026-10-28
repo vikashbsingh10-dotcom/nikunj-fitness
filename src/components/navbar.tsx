@@ -69,13 +69,13 @@ export function Navbar({
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="font-extrabold tracking-tight text-slate-900 text-lg">APEX</span>
-                <span className="bg-emerald-100 text-emerald-800 font-bold text-[10px] px-1.5 py-0.5 rounded tracking-wide">
-                  PRO
+                <span className="font-extrabold tracking-tight text-slate-900 text-lg">NIKUNJ</span>
+                <span className="bg-emerald-600 text-white font-extrabold text-[10px] px-1.5 py-0.5 rounded tracking-wide shadow-xs">
+                  FITNESS
                 </span>
               </div>
               <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider -mt-0.5">
-                Gym Operations
+                Club & Gym Ops
               </p>
             </div>
           </div>

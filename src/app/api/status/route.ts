@@ -8,7 +8,7 @@ export async function GET() {
 
   return NextResponse.json({
     timestamp: new Date().toISOString(),
-    system: "Apex Gym Management API",
+    system: "Nikunj Fitness API",
     services: {
       supabase: {
         configured: supabaseReady,
@@ -18,7 +18,7 @@ export async function GET() {
       resend: {
         configured: resendReady,
         mode: resendReady ? "live_email_delivery" : "simulated_console_preview",
-        from: process.env.RESEND_FROM_EMAIL || "default",
+        from: process.env.RESEND_FROM_EMAIL || "Nikunj Fitness <onboarding@resend.dev>",
       },
       environment: process.env.NODE_ENV || "development",
     },

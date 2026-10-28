@@ -12,7 +12,7 @@ export function getResendClient(): Resend | null {
   return new Resend(process.env.RESEND_API_KEY);
 }
 
-const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || "Apex Fitness <onboarding@resend.dev>";
+const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || "Nikunj Fitness <onboarding@resend.dev>";
 
 export interface SendEmailResult {
   success: boolean;
@@ -30,7 +30,7 @@ export async function sendWelcomeEmail({
   planName,
   startDate,
   endDate,
-  gymName = "Apex Performance Club",
+  gymName = "Nikunj Fitness Club",
 }: {
   to: string;
   name: string;
@@ -129,7 +129,7 @@ export async function sendReceiptEmail({
   receiptNumber,
   paymentMethod,
   paymentDate,
-  gymName = "Apex Performance Club",
+  gymName = "Nikunj Fitness Club",
 }: {
   to: string;
   name: string;
@@ -241,7 +241,7 @@ export async function sendRenewalReminderEmail({
   planName,
   endDate,
   daysRemaining,
-  gymName = "Apex Performance Club",
+  gymName = "Nikunj Fitness Club",
 }: {
   to: string;
   name: string;

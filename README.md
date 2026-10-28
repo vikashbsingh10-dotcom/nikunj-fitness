@@ -1,6 +1,6 @@
-# 🏋️‍♂️ Apex GymOps — Modern Gym Membership Management System
+# 🏋️‍♂️ Nikunj Fitness — Modern Gym Membership Management System
 
-A modern, minimalist, responsive **Gym Membership Management System** built with **Next.js (App Router)**, **TypeScript**, **Tailwind CSS**, and **shadcn/ui** aesthetics. Powered by **Supabase PostgreSQL** for secure storage and **Resend** for transactional member emails.
+A modern, minimalist, responsive **Gym Membership Management System** built for **Nikunj Fitness** with **Next.js (App Router)**, **TypeScript**, **Tailwind CSS**, and **shadcn/ui** aesthetics. Powered by **Supabase PostgreSQL** for secure storage and **Resend** for transactional member emails.
 
 Designed for gym owners, front-desk staff, and personal training studios who demand **speed, zero-clutter UI/UX, mobile responsiveness, and accurate membership expiry tracking**.
 
@@ -84,7 +84,7 @@ SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
 
 # Resend Email Service
 RESEND_API_KEY=re_your_api_key_here
-RESEND_FROM_EMAIL=Apex Fitness <onboarding@resend.dev>
+RESEND_FROM_EMAIL=Nikunj Fitness <onboarding@resend.dev>
 
 # Application Base URL
 NEXT_PUBLIC_APP_URL=http://localhost:3000
@@ -120,7 +120,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 2. Generate an API Key under **API Keys** and set `RESEND_API_KEY=re_...` in `.env.local`.
 3. To test immediately without a domain, use the verified sandbox sender:
    ```env
-   RESEND_FROM_EMAIL=Apex Fitness <onboarding@resend.dev>
+   RESEND_FROM_EMAIL=Nikunj Fitness <onboarding@resend.dev>
    ```
 4. For production, add your custom domain in Resend (**Domains > Add Domain**) and update DNS records (DKIM, SPF).
 

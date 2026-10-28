@@ -16,7 +16,7 @@ export async function POST(request: Request) {
       planName: planName || "Standard Membership",
       startDate: startDate || new Date().toISOString().split("T")[0],
       endDate: endDate || "N/A",
-      gymName: gymName || "Apex Performance Club",
+      gymName: gymName || "Nikunj Fitness Club",
     });
 
     return NextResponse.json(result);

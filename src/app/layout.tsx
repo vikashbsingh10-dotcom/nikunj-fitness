@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Apex GymOps - Gym Membership Management System",
+  title: "Nikunj Fitness - Gym Membership Management System",
   description:
-    "Modern, minimalist, responsive gym management system with automated expiry tracking, check-in attendance, payment receipts, and Resend renewal notifications.",
+    "Modern, responsive gym management system with automated expiry tracking, check-in attendance, payment receipts, and Resend renewal notifications for Nikunj Fitness.",
   icons: {
     icon: "/favicon.ico",
   },

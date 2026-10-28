@@ -16,7 +16,7 @@ export async function POST(request: Request) {
       planName: planName || "Gym Plan",
       endDate,
       daysRemaining: typeof daysRemaining === "number" ? daysRemaining : 0,
-      gymName: gymName || "Apex Performance Club",
+      gymName: gymName || "Nikunj Fitness Club",
     });
 
     return NextResponse.json(result);

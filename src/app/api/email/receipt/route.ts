@@ -18,7 +18,7 @@ export async function POST(request: Request) {
       receiptNumber,
       paymentMethod: paymentMethod || "card",
       paymentDate: paymentDate || new Date().toISOString().split("T")[0],
-      gymName: gymName || "Apex Performance Club",
+      gymName: gymName || "Nikunj Fitness Club",
     });
 
     return NextResponse.json(result);
