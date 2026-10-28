@@ -143,9 +143,10 @@ export async function sendReceiptEmail({
   const subject = `Payment Receipt #${receiptNumber} - ${gymName}`;
   const resend = getResendClient();
 
-  const formattedAmount = new Intl.NumberFormat("en-US", {
+  const formattedAmount = new Intl.NumberFormat("en-IN", {
     style: "currency",
-    currency: "USD",
+    currency: "INR",
+    maximumFractionDigits: 0,
   }).format(amount);
 
   const html = `

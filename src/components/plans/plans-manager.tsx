@@ -25,7 +25,7 @@ export function PlansManager({ plans, onPlansUpdated }: PlansManagerProps) {
   // Form states
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [price, setPrice] = useState<number>(49);
+  const [price, setPrice] = useState<number>(1499);
   const [durationDays, setDurationDays] = useState<number>(30);
   const [featuresText, setFeaturesText] = useState("");
   const [loading, setLoading] = useState(false);
@@ -34,7 +34,7 @@ export function PlansManager({ plans, onPlansUpdated }: PlansManagerProps) {
     setEditingPlan(null);
     setName("");
     setDescription("");
-    setPrice(49);
+    setPrice(1499);
     setDurationDays(30);
     setFeaturesText("Gym floor access\nCardio & free weights\nLocker room access");
     setModalOpen(true);
@@ -189,12 +189,12 @@ export function PlansManager({ plans, onPlansUpdated }: PlansManagerProps) {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs font-semibold text-slate-700">Price (USD) *</label>
+              <label className="text-xs font-semibold text-slate-700">Price (INR ₹) *</label>
               <Input
                 required
                 type="number"
                 min="0"
-                step="0.01"
+                step="1"
                 value={price}
                 onChange={(e) => setPrice(parseFloat(e.target.value) || 0)}
                 className="mt-1 text-xs"

@@ -19,7 +19,7 @@ import {
   RotateCw,
   Printer,
   CheckCircle2,
-  DollarSign,
+  IndianRupee,
 } from "lucide-react";
 
 interface PaymentsManagerProps {
@@ -44,8 +44,8 @@ export function PaymentsManager({
   // New payment form
   const [memberId, setMemberId] = useState("");
   const [planId, setPlanId] = useState("");
-  const [amount, setAmount] = useState<number>(49);
-  const [method, setMethod] = useState<PaymentMethod>("credit_card");
+  const [amount, setAmount] = useState<number>(1499);
+  const [method, setMethod] = useState<PaymentMethod>("upi");
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
   const [sendingReceiptId, setSendingReceiptId] = useState<string | null>(null);
@@ -340,12 +340,12 @@ export function PaymentsManager({
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs font-semibold text-slate-700">Amount (USD) *</label>
+              <label className="text-xs font-semibold text-slate-700">Amount (INR ₹) *</label>
               <Input
                 required
                 type="number"
                 min="0"
-                step="0.01"
+                step="1"
                 value={amount}
                 onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
                 className="mt-1 text-xs"
@@ -358,12 +358,12 @@ export function PaymentsManager({
                 onChange={(e) => setMethod(e.target.value as PaymentMethod)}
                 className="mt-1 w-full h-9 rounded-lg border border-slate-200 bg-white px-3 py-1 text-xs text-slate-800"
               >
+                <option value="upi">UPI (GPay / PhonePe / Paytm)</option>
+                <option value="cash">Cash (Front Desk)</option>
                 <option value="credit_card">Credit Card</option>
                 <option value="debit_card">Debit Card</option>
-                <option value="cash">Cash (Front Desk)</option>
-                <option value="bank_transfer">Bank Transfer</option>
-                <option value="stripe">Stripe</option>
-                <option value="upi">UPI</option>
+                <option value="bank_transfer">Net Banking / NEFT</option>
+                <option value="stripe">Online Payment</option>
               </select>
             </div>
           </div>

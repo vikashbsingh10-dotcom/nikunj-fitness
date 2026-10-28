@@ -6,11 +6,10 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat("en-US", {
+  return new Intl.NumberFormat("en-IN", {
     style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
+    currency: "INR",
+    maximumFractionDigits: 0,
   }).format(amount);
 }
 
@@ -18,7 +17,7 @@ export function formatDate(dateString: string | Date | null | undefined): string
   if (!dateString) return "N/A";
   const date = typeof dateString === "string" ? new Date(dateString) : dateString;
   if (isNaN(date.getTime())) return "Invalid Date";
-  return new Intl.DateTimeFormat("en-US", {
+  return new Intl.DateTimeFormat("en-IN", {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -29,7 +28,7 @@ export function formatDateTime(dateString: string | Date | null | undefined): st
   if (!dateString) return "N/A";
   const date = typeof dateString === "string" ? new Date(dateString) : dateString;
   if (isNaN(date.getTime())) return "Invalid Date";
-  return new Intl.DateTimeFormat("en-US", {
+  return new Intl.DateTimeFormat("en-IN", {
     month: "short",
     day: "numeric",
     hour: "numeric",
@@ -54,4 +53,3 @@ export function computeMembershipStatus(endDateString: string): "active" | "expi
   if (days <= 7) return "expiring";
   return "active";
 }
-

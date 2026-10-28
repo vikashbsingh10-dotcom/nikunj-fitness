@@ -270,16 +270,21 @@ export function MemberDetailsModal({
       {/* 2. Renew Tab */}
       {activeTab === "renew" && (
         <div className="space-y-4 text-xs">
-          <p className="text-slate-500">
-            Extend membership validity. If already expired, new validity starts today. If currently active, validity extends from existing expiry date.
-          </p>
+          <div className="p-3.5 rounded-xl border-2 border-amber-300 bg-amber-50/70 text-slate-900">
+            <span className="font-bold text-amber-950 flex items-center gap-1.5 text-xs">
+              ⚡ Instant Renewal Engine
+            </span>
+            <p className="text-[11px] text-amber-900 mt-1">
+              If already expired, validity starts fresh today. If active, validity extends seamlessly from current expiry date.
+            </p>
+          </div>
 
           <div>
-            <label className="text-xs font-semibold text-slate-700">Select Renewal Plan</label>
+            <label className="text-xs font-bold text-slate-800">Select Renewal Plan *</label>
             <select
               value={renewalPlanId}
               onChange={(e) => setRenewalPlanId(e.target.value)}
-              className="mt-1 w-full h-9 rounded-lg border border-slate-200 bg-white px-3 py-1 text-xs text-slate-800"
+              className="mt-1 w-full h-10 rounded-xl border-2 border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-900 shadow-xs focus-visible:outline-none focus-visible:border-slate-900"
             >
               {plans.map((p) => (
                 <option key={p.id} value={p.id}>
@@ -290,26 +295,26 @@ export function MemberDetailsModal({
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-slate-700">Payment Method</label>
+            <label className="text-xs font-bold text-slate-800">Payment Collection Method</label>
             <select
               value={renewalPaymentMethod}
               onChange={(e) => setRenewalPaymentMethod(e.target.value as PaymentMethod)}
-              className="mt-1 w-full h-9 rounded-lg border border-slate-200 bg-white px-3 py-1 text-xs text-slate-800"
+              className="mt-1 w-full h-10 rounded-xl border-2 border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-900 shadow-xs focus-visible:outline-none focus-visible:border-slate-900"
             >
+              <option value="upi">UPI (GPay / PhonePe / Paytm)</option>
+              <option value="cash">Cash (Front Desk Counter)</option>
               <option value="credit_card">Credit Card</option>
               <option value="debit_card">Debit Card</option>
-              <option value="cash">Cash (Front Desk)</option>
-              <option value="bank_transfer">Bank Transfer</option>
-              <option value="stripe">Stripe</option>
-              <option value="upi">UPI</option>
+              <option value="bank_transfer">Net Banking / NEFT</option>
+              <option value="stripe">Online Payment</option>
             </select>
           </div>
 
-          <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800">
-            <span className="font-semibold">Automated Actions:</span>
-            <ul className="list-disc pl-4 mt-1 space-y-0.5 text-[11px]">
-              <li>Updates member end date & reactivates status to Active</li>
-              <li>Generates an official invoice / payment receipt #</li>
+          <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900">
+            <span className="font-bold">Automated Member Actions:</span>
+            <ul className="list-disc pl-4 mt-1 space-y-0.5 text-[11px] text-emerald-800">
+              <li>Extends athlete membership end date & restores Active badge</li>
+              <li>Generates an official GST Receipt # in INR (₹)</li>
               <li>Dispatches digital payment receipt to {member.email} via Resend</li>
             </ul>
           </div>
@@ -324,15 +329,14 @@ export function MemberDetailsModal({
             >
               Back
             </Button>
-            <Button
+            <button
               type="button"
-              size="sm"
               onClick={handleRenew}
               disabled={isRenewing}
-              className="gap-1.5 bg-slate-900"
+              className="h-10 px-5 rounded-xl text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-600 shadow-md shadow-orange-500/25 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
             >
-              {isRenewing ? "Renewing..." : "Process Renewal & Receipt"}
-            </Button>
+              {isRenewing ? "Renewing..." : "⚡ Process Renewal & Issue Invoice"}
+            </button>
           </DialogFooter>
         </div>
       )}

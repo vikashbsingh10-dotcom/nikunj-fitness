@@ -19,12 +19,19 @@ import { Badge } from "@/components/ui/badge";
 import { ToastProvider, useToast } from "@/components/ui/toast-context";
 import { GymStore } from "@/lib/store";
 import { Member, Plan, Payment, Attendance, DashboardMetrics } from "@/types";
-import { Search, QrCode, CheckCircle2, RotateCw } from "lucide-react";
+import { Search, QrCode, CheckCircle2, RotateCw, ArrowLeft } from "lucide-react";
 
 function GymAppContent() {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<NavTab>("dashboard");
+  const [previousTab, setPreviousTab] = useState<NavTab>("dashboard");
   const [loading, setLoading] = useState(true);
+
+  const handleTabChange = (newTab: NavTab) => {
+    setPreviousTab(activeTab);
+    setActiveTab(newTab);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   // Data states
   const [members, setMembers] = useState<Member[]>([]);
@@ -122,13 +129,34 @@ function GymAppContent() {
       {/* Top Navbar */}
       <Navbar
         activeTab={activeTab}
-        onTabChange={setActiveTab}
+        onTabChange={handleTabChange}
+        previousTab={previousTab}
         onOpenNewMember={() => setNewMemberModalOpen(true)}
         onOpenQuickCheckIn={() => setQuickCheckInModalOpen(true)}
       />
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        {/* Big prominent Back bar on Secondary Tabs */}
+        {activeTab !== "dashboard" && (
+          <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+            <div className="flex items-center gap-2">
+              <span className="text-xs uppercase font-extrabold text-slate-400 tracking-wider">Viewing</span>
+              <span className="text-slate-300">/</span>
+              <h2 className="text-base sm:text-lg font-extrabold text-slate-900 capitalize tracking-tight">
+                {activeTab} Management
+              </h2>
+            </div>
+            {/* BIG PROMINENT BACK BUTTON ON TOP RIGHT */}
+            <button
+              onClick={() => handleTabChange("dashboard")}
+              className="flex items-center gap-2 h-10 px-5 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 text-white hover:bg-slate-800 shadow-sm active:scale-95 transition-all cursor-pointer group"
+            >
+              <ArrowLeft className="h-4 w-4 stroke-[2.5] group-hover:-translate-x-1 transition-transform" />
+              <span>← Back to Dashboard</span>
+            </button>
+          </div>
+        )}
         {loading ? (
           <div className="flex items-center justify-center py-24 text-slate-400 gap-2">
             <RotateCw className="h-5 w-5 animate-spin" />

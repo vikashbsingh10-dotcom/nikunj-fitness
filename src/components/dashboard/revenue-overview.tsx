@@ -4,7 +4,7 @@ import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
 import { DashboardMetrics, Payment } from "@/types";
 import { formatCurrency, formatDate } from "@/lib/utils";
-import { DollarSign, CreditCard, ArrowUpRight, CheckCircle2 } from "lucide-react";
+import { IndianRupee, CreditCard, ArrowUpRight, CheckCircle2 } from "lucide-react";
 import { Badge } from "../ui/badge";
 
 interface RevenueOverviewProps {

@@ -139,31 +139,31 @@ CREATE TRIGGER trigger_calculate_member_status
     EXECUTE FUNCTION refresh_member_status();
 
 -- ==============================================================================
--- SEED DATA (Default Plans & Members)
+-- SEED DATA (Default Plans & Members in INR ₹)
 -- ==============================================================================
 INSERT INTO public.plans (id, name, description, price, duration_days, features, is_active)
 VALUES
-    ('11111111-1111-1111-1111-111111111111', 'Standard Monthly', 'Unlimited gym floor access, cardio equipment & locker rooms.', 49.00, 30, '["Gym floor access", "Cardio zone", "Locker room", "Free Wi-Fi"]'::jsonb, true),
-    ('22222222-2222-2222-2222-222222222222', 'Quarterly Strength', '3-month access plus 2 complimentary personal training sessions.', 129.00, 90, '["All Standard benefits", "2 Personal Training sessions", "Body scan analysis", "10% smoothie bar discount"]'::jsonb, true),
-    ('33333333-3333-3333-3333-333333333333', 'Elite Annual VIP', 'Full 365-day all-inclusive membership, sauna, steam room & guest passes.', 449.00, 365, '["All Quarterly benefits", "Sauna & Steam room access", "Unlimited guest passes", "Custom workout programming", "Towel service"]'::jsonb, true),
-    ('44444444-4444-4444-4444-444444444444', 'Day Pass', 'Full access for a single day trial or traveling athlete.', 15.00, 1, '["1-day gym floor access", "Locker room access"]'::jsonb, true)
+    ('11111111-1111-1111-1111-111111111111', 'Standard Monthly', 'Unlimited gym floor access, cardio equipment & locker rooms.', 1499.00, 30, '["Gym floor access", "Cardio zone", "Locker room", "Free Wi-Fi"]'::jsonb, true),
+    ('22222222-2222-2222-2222-222222222222', 'Quarterly Strength', '3-month access plus 2 complimentary personal training sessions.', 3999.00, 90, '["All Standard benefits", "2 Personal Training sessions", "Body scan analysis", "10% nutrition bar discount"]'::jsonb, true),
+    ('33333333-3333-3333-3333-333333333333', 'Elite Annual VIP', 'Full 365-day all-inclusive membership, sauna, steam room & guest passes.', 12999.00, 365, '["All Quarterly benefits", "Sauna & Steam room access", "Unlimited guest passes", "Custom workout programming", "Towel service"]'::jsonb, true),
+    ('44444444-4444-4444-4444-444444444444', 'Day Pass', 'Full access for a single day trial or traveling athlete.', 299.00, 1, '["1-day gym floor access", "Locker room access"]'::jsonb, true)
 ON CONFLICT (id) DO NOTHING;
 
 -- Sample Members
 INSERT INTO public.members (id, full_name, email, phone, emergency_contact, plan_id, start_date, end_date, status, notes)
 VALUES
-    ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'Marcus Vance', 'marcus.vance@example.com', '+1 (555) 234-5678', 'Sarah Vance: +1 (555) 234-5679', '33333333-3333-3333-3333-333333333333', CURRENT_DATE - INTERVAL '60 days', CURRENT_DATE + INTERVAL '305 days', 'active', 'Focuses on powerlifting and hypertrophy.'),
-    ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'Elena Rostova', 'elena.rostova@example.com', '+1 (555) 345-6789', 'Dmitri Rostov: +1 (555) 345-9988', '22222222-2222-2222-2222-222222222222', CURRENT_DATE - INTERVAL '86 days', CURRENT_DATE + INTERVAL '4 days', 'expiring', 'Prefers morning classes and HIIT zone.'),
-    ('cccccccc-cccc-cccc-cccc-cccccccccccc', 'David Chen', 'david.chen@example.com', '+1 (555) 456-7890', 'Linda Chen: +1 (555) 456-7891', '11111111-1111-1111-1111-111111111111', CURRENT_DATE - INTERVAL '40 days', CURRENT_DATE - INTERVAL '10 days', 'expired', 'Expired last week. Follow up for renewal.'),
-    ('dddddddd-dddd-dddd-dddd-dddddddddddd', 'Sophia Miller', 'sophia.miller@example.com', '+1 (555) 567-8901', 'James Miller: +1 (555) 567-8902', '11111111-1111-1111-1111-111111111111', CURRENT_DATE - INTERVAL '15 days', CURRENT_DATE + INTERVAL '15 days', 'active', 'Attends evening yoga and core training.')
+    ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'Aryan Sharma', 'aryan.sharma@example.com', '+91 98201 23456', 'Sunita Sharma: +91 98201 99887', '33333333-3333-3333-3333-333333333333', CURRENT_DATE - INTERVAL '60 days', CURRENT_DATE + INTERVAL '305 days', 'active', 'Focuses on powerlifting and hypertrophy.'),
+    ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'Priya Patel', 'priya.patel@example.com', '+91 98982 34567', 'Ketan Patel: +91 98982 11223', '22222222-2222-2222-2222-222222222222', CURRENT_DATE - INTERVAL '86 days', CURRENT_DATE + INTERVAL '4 days', 'expiring', 'Prefers morning classes and HIIT zone.'),
+    ('cccccccc-cccc-cccc-cccc-cccccccccccc', 'Rohan Verma', 'rohan.verma@example.com', '+91 97112 45678', 'Anita Verma: +91 97112 77889', '11111111-1111-1111-1111-111111111111', CURRENT_DATE - INTERVAL '40 days', CURRENT_DATE - INTERVAL '10 days', 'expired', 'Expired last week. Follow up for renewal.'),
+    ('dddddddd-dddd-dddd-dddd-dddddddddddd', 'Ananya Iyer', 'ananya.iyer@example.com', '+91 99401 56789', 'Suresh Iyer: +91 99401 33445', '11111111-1111-1111-1111-111111111111', CURRENT_DATE - INTERVAL '15 days', CURRENT_DATE + INTERVAL '15 days', 'active', 'Attends evening yoga and core training.')
 ON CONFLICT (id) DO NOTHING;
 
 -- Sample Payments
 INSERT INTO public.payments (id, member_id, plan_id, amount, payment_method, receipt_number, payment_date, notes)
 VALUES
-    (uuid_generate_v4(), 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '33333333-3333-3333-3333-333333333333', 449.00, 'credit_card', 'REC-2026-001', timezone('utc'::text, now() - INTERVAL '60 days'), 'Annual Elite renewal'),
-    (uuid_generate_v4(), 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '22222222-2222-2222-2222-222222222222', 129.00, 'credit_card', 'REC-2026-002', timezone('utc'::text, now() - INTERVAL '86 days'), 'Quarterly payment'),
-    (uuid_generate_v4(), 'dddddddd-dddd-dddd-dddd-dddddddddddd', '11111111-1111-1111-1111-111111111111', 49.00, 'cash', 'REC-2026-003', timezone('utc'::text, now() - INTERVAL '15 days'), 'Standard monthly upfront cash')
+    (uuid_generate_v4(), 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '33333333-3333-3333-3333-333333333333', 12999.00, 'upi', 'REC-2026-001', timezone('utc'::text, now() - INTERVAL '60 days'), 'Annual Elite VIP via UPI'),
+    (uuid_generate_v4(), 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '22222222-2222-2222-2222-222222222222', 3999.00, 'credit_card', 'REC-2026-002', timezone('utc'::text, now() - INTERVAL '86 days'), 'Quarterly payment'),
+    (uuid_generate_v4(), 'dddddddd-dddd-dddd-dddd-dddddddddddd', '11111111-1111-1111-1111-111111111111', 1499.00, 'cash', 'REC-2026-003', timezone('utc'::text, now() - INTERVAL '15 days'), 'Standard monthly upfront cash')
 ON CONFLICT DO NOTHING;
 
 -- Sample Attendances

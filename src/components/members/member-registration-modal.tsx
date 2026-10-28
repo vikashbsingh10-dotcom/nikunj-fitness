@@ -124,7 +124,7 @@ export function MemberRegistrationModal({
             <User className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
             <Input
               required
-              placeholder="e.g. Alexander Stone"
+              placeholder="e.g. Rahul Sharma"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               className="pl-9 text-xs"
@@ -141,7 +141,7 @@ export function MemberRegistrationModal({
               <Input
                 required
                 type="email"
-                placeholder="alexander@example.com"
+                placeholder="rahul.sharma@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="pl-9 text-xs"
@@ -154,7 +154,7 @@ export function MemberRegistrationModal({
               <Phone className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
               <Input
                 required
-                placeholder="+1 (555) 000-0000"
+                placeholder="+91 98765 43210"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 className="pl-9 text-xs"
@@ -169,7 +169,7 @@ export function MemberRegistrationModal({
           <div className="relative mt-1">
             <ShieldAlert className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
             <Input
-              placeholder="Name & Relationship (e.g. Maria - Spouse +1 555-0199)"
+              placeholder="Name & Relationship (e.g. Priya - Sister +91 98765 11223)"
               value={emergencyContact}
               onChange={(e) => setEmergencyContact(e.target.value)}
               className="pl-9 text-xs"
@@ -212,35 +212,35 @@ export function MemberRegistrationModal({
 
         {/* Initial Payment Record */}
         <div className="pt-2 border-t border-slate-100">
-          <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-800 select-none">
+          <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-900 select-none">
             <input
               type="checkbox"
               checked={recordPayment}
               onChange={(e) => setRecordPayment(e.target.checked)}
-              className="rounded text-slate-900 h-4 w-4"
+              className="rounded text-emerald-600 h-4 w-4 accent-emerald-600"
             />
-            Record initial payment ({selectedPlan ? formatCurrency(selectedPlan.price) : "$0"})
+            Record initial payment ({selectedPlan ? formatCurrency(selectedPlan.price) : "₹0"})
           </label>
 
           {recordPayment && (
-            <div className="mt-2 grid grid-cols-2 gap-3 pl-6">
+            <div className="mt-2.5 grid grid-cols-2 gap-3 p-3 rounded-xl bg-emerald-50/70 border border-emerald-200">
               <div>
-                <label className="text-[11px] text-slate-500">Payment Method</label>
+                <label className="text-[11px] font-bold text-emerald-900">Payment Method</label>
                 <select
                   value={paymentMethod}
                   onChange={(e) => setPaymentMethod(e.target.value as PaymentMethod)}
-                  className="mt-1 w-full h-8 rounded border border-slate-200 bg-white px-2 text-xs text-slate-800"
+                  className="mt-1 w-full h-8 rounded-lg border border-emerald-300 bg-white px-2 text-xs font-semibold text-slate-800"
                 >
+                  <option value="upi">UPI (GPay / PhonePe / Paytm)</option>
+                  <option value="cash">Cash (Front Desk)</option>
                   <option value="credit_card">Credit Card</option>
                   <option value="debit_card">Debit Card</option>
-                  <option value="cash">Cash</option>
-                  <option value="bank_transfer">Bank Transfer</option>
-                  <option value="stripe">Stripe / Online</option>
-                  <option value="upi">UPI</option>
+                  <option value="bank_transfer">Net Banking / NEFT</option>
+                  <option value="stripe">Online Payment</option>
                 </select>
               </div>
-              <div className="text-[11px] text-slate-500 flex flex-col justify-end">
-                <span>Receipt generated automatically & emailed via Resend.</span>
+              <div className="text-[11px] text-emerald-800 flex flex-col justify-end">
+                <span>GST Tax Receipt # generated automatically & sent via Resend.</span>
               </div>
             </div>
           )}
@@ -268,9 +268,13 @@ export function MemberRegistrationModal({
           >
             Cancel
           </Button>
-          <Button type="submit" size="sm" disabled={loading} className="gap-1.5">
-            {loading ? "Registering..." : "Complete Registration"}
-          </Button>
+          <button
+            type="submit"
+            disabled={loading}
+            className="h-10 px-5 rounded-xl text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-500 hover:to-teal-600 shadow-md shadow-emerald-600/30 ring-2 ring-emerald-500/40 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5"
+          >
+            {loading ? "Registering..." : "✨ Complete Registration"}
+          </button>
         </DialogFooter>
       </form>
     </Dialog>

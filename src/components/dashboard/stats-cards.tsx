@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Users, AlertTriangle, QrCode, DollarSign, TrendingUp, ArrowUpRight } from "lucide-react";
+import { Users, AlertTriangle, QrCode, IndianRupee, TrendingUp, ArrowUpRight } from "lucide-react";
 import { DashboardMetrics } from "@/types";
 import { Card, CardContent } from "../ui/card";
 import { formatCurrency } from "@/lib/utils";
@@ -44,7 +44,7 @@ export function StatsCards({ metrics, onFilterClick }: StatsCardsProps) {
       title: "Monthly Revenue (MRR)",
       value: formatCurrency(metrics.monthlyRevenue),
       subtext: `${formatCurrency(metrics.totalRevenue)} all-time`,
-      icon: <DollarSign className="h-4 w-4 text-slate-900" />,
+      icon: <IndianRupee className="h-4 w-4 text-slate-900" />,
       badge: "+14% MoM",
       badgeColor: "bg-slate-100 text-slate-800 border-slate-200",
       onClick: () => onFilterClick?.("payments"),

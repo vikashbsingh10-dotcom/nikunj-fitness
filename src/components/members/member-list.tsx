@@ -19,6 +19,7 @@ import {
   ExternalLink,
   Calendar,
   CheckCircle2,
+  Zap,
 } from "lucide-react";
 
 interface MemberListProps {
@@ -76,15 +77,20 @@ export function MemberList({
     <Card className="w-full">
       <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
         <div>
-          <CardTitle className="text-lg font-bold">Member Directory</CardTitle>
+          <CardTitle className="text-xl font-extrabold text-slate-900 tracking-tight">
+            Member Directory
+          </CardTitle>
           <p className="text-xs text-slate-500 mt-1">
             Manage athlete profiles, subscriptions, and access statuses
           </p>
         </div>
-        <Button onClick={onOpenNewMember} size="sm" className="gap-1.5 self-start sm:self-center">
-          <UserPlus className="h-3.5 w-3.5" />
-          Add New Member
-        </Button>
+        <button
+          onClick={onOpenNewMember}
+          className="flex items-center gap-2 h-10 px-5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-500 hover:to-teal-600 shadow-md shadow-emerald-600/30 ring-2 ring-emerald-500/40 active:scale-95 transition-all cursor-pointer self-start sm:self-center"
+        >
+          <UserPlus className="h-4 w-4 stroke-[2.5]" />
+          <span>+ Add New Member</span>
+        </button>
       </CardHeader>
 
       <CardContent className="pt-5 space-y-4">
@@ -250,14 +256,14 @@ export function MemberList({
                             Check-in
                           </Button>
 
-                          <Button
-                            variant="outline"
-                            size="sm"
+                          <button
                             onClick={() => onRenewMember(member)}
-                            className="h-8 text-xs px-2.5"
+                            className="flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs font-bold text-amber-950 bg-amber-100 hover:bg-amber-200 border border-amber-300 shadow-xs transition-all cursor-pointer"
+                            title="Renew Membership"
                           >
-                            Renew
-                          </Button>
+                            <Zap className="h-3.5 w-3.5 text-amber-600 fill-amber-500" />
+                            <span>Renew</span>
+                          </button>
 
                           <Button
                             variant="ghost"
