@@ -32,22 +32,32 @@ export function MemberRegistrationModal({
   const [phone, setPhone] = useState("");
   const [emergencyContact, setEmergencyContact] = useState("");
   const [selectedPlanId, setSelectedPlanId] = useState<string>("");
+  const [customFee, setCustomFee] = useState<number>(1499);
   const [startDate, setStartDate] = useState<string>("");
   const [notes, setNotes] = useState("");
 
   // Payment states
   const [recordPayment, setRecordPayment] = useState(true);
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("credit_card");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("upi");
 
-  // Initialize selected plan and default start date on mount
+  // Initialize selected plan, default start date and custom fee
   useEffect(() => {
     if (!startDate) {
       setStartDate(new Date().toISOString().split("T")[0]);
     }
     if (plans.length > 0 && !selectedPlanId) {
       setSelectedPlanId(plans[0].id);
+      setCustomFee(plans[0].price);
     }
   }, [plans, selectedPlanId, startDate]);
+
+  const handlePlanChange = (planId: string) => {
+    setSelectedPlanId(planId);
+    const plan = plans.find((p) => p.id === planId);
+    if (plan) {
+      setCustomFee(plan.price);
+    }
+  };
 
   const selectedPlan = plans.find((p) => p.id === selectedPlanId);
 
@@ -61,8 +71,8 @@ export function MemberRegistrationModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!fullName || !email || !phone || !selectedPlanId) {
-      toast.error("Please fill all required fields", "Name, email, phone, and plan are mandatory.");
+    if (!fullName || !email || !selectedPlanId) {
+      toast.error("Please fill required fields", "Name, email, and plan are mandatory.");
       return;
     }
 
@@ -71,16 +81,17 @@ export function MemberRegistrationModal({
       await GymStore.registerMember({
         full_name: fullName,
         email,
-        phone,
+        phone: phone || undefined,
         emergency_contact: emergencyContact,
         plan_id: selectedPlanId,
+        custom_fee: Number(customFee),
         start_date: startDate,
         end_date: calculatedEndDate,
         notes,
         initialPayment:
-          recordPayment && selectedPlan
+          recordPayment
             ? {
-                amount: selectedPlan.price,
+                amount: Number(customFee),
                 method: paymentMethod,
               }
             : undefined,
@@ -88,7 +99,7 @@ export function MemberRegistrationModal({
 
       toast.success(
         `Member ${fullName} registered!`,
-        `Assigned to ${selectedPlan?.name}. Confirmation email dispatched.`
+        `Assigned to ${selectedPlan?.name} at ${formatCurrency(customFee)}. Confirmation email dispatched.`
       );
 
       // Reset form
@@ -149,12 +160,11 @@ export function MemberRegistrationModal({
             </div>
           </div>
           <div>
-            <label className="text-xs font-semibold text-slate-700">Phone Number *</label>
+            <label className="text-xs font-semibold text-slate-700">Phone Number (Optional)</label>
             <div className="relative mt-1">
               <Phone className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
               <Input
-                required
-                placeholder="+91 98765 43210"
+                placeholder="+91 98765 43210 (Optional)"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 className="pl-9 text-xs"
@@ -165,7 +175,7 @@ export function MemberRegistrationModal({
 
         {/* Emergency Contact */}
         <div>
-          <label className="text-xs font-semibold text-slate-700">Emergency Contact</label>
+          <label className="text-xs font-semibold text-slate-700">Emergency Contact (Optional)</label>
           <div className="relative mt-1">
             <ShieldAlert className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
             <Input
@@ -182,15 +192,45 @@ export function MemberRegistrationModal({
           <label className="text-xs font-semibold text-slate-700">Select Membership Plan *</label>
           <select
             value={selectedPlanId}
-            onChange={(e) => setSelectedPlanId(e.target.value)}
+            onChange={(e) => handlePlanChange(e.target.value)}
             className="mt-1 w-full h-9 rounded-lg border border-slate-200 bg-white px-3 py-1 text-xs text-slate-800 shadow-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-900 cursor-pointer"
           >
             {plans.map((p) => (
               <option key={p.id} value={p.id}>
-                {p.name} — {formatCurrency(p.price)} ({p.duration_days} days)
+                {p.name} — Standard: {formatCurrency(p.price)} ({p.duration_days} days)
               </option>
             ))}
           </select>
+        </div>
+
+        {/* 🌟 OWNER CUSTOM FEE STRUCTURE 🌟 */}
+        <div className="p-3.5 rounded-xl bg-amber-50/90 border-2 border-amber-300">
+          <div className="flex items-center justify-between">
+            <label className="text-xs font-extrabold text-amber-950 flex items-center gap-1.5">
+              <span>Owner Custom Fee to Charge (₹) *</span>
+              <span className="text-[10px] bg-amber-200 text-amber-900 font-extrabold px-1.5 py-0.5 rounded tracking-wide uppercase">
+                Owner Discretion
+              </span>
+            </label>
+            <span className="text-[11px] text-amber-800 font-semibold">
+              Standard: {selectedPlan ? formatCurrency(selectedPlan.price) : "₹0"}
+            </span>
+          </div>
+          <div className="mt-2 relative">
+            <span className="absolute left-3 top-2.5 text-xs font-bold text-slate-600">₹</span>
+            <Input
+              type="number"
+              min="0"
+              step="1"
+              value={customFee}
+              onChange={(e) => setCustomFee(parseFloat(e.target.value) || 0)}
+              className="pl-8 text-sm font-extrabold text-slate-900 bg-white border-2 border-amber-300 focus-visible:border-slate-900"
+              placeholder="Enter fee amount..."
+            />
+          </div>
+          <p className="text-[10px] text-amber-900 mt-1.5 font-medium">
+            Plan rules and duration ({selectedPlan?.duration_days} days) remain standard for everyone, but you can set any fee you negotiate for this member.
+          </p>
         </div>
 
         {/* Start Date & Expiration preview */}
@@ -219,7 +259,7 @@ export function MemberRegistrationModal({
               onChange={(e) => setRecordPayment(e.target.checked)}
               className="rounded text-emerald-600 h-4 w-4 accent-emerald-600"
             />
-            Record initial payment ({selectedPlan ? formatCurrency(selectedPlan.price) : "₹0"})
+            Record initial payment ({formatCurrency(customFee)})
           </label>
 
           {recordPayment && (

@@ -17,12 +17,13 @@ export interface Member {
   id: string;
   full_name: string;
   email: string;
-  phone: string;
-  emergency_contact: string;
+  phone?: string;
+  emergency_contact?: string;
   gender?: "male" | "female" | "other" | "unspecified";
   date_of_birth?: string;
   plan_id: string;
   plan?: Plan;
+  custom_fee?: number;
   start_date: string;
   end_date: string;
   status: MembershipStatus;
@@ -58,7 +59,7 @@ export interface Attendance {
     id: string;
     full_name: string;
     email: string;
-    phone: string;
+    phone?: string;
     plan_name?: string;
     status: MembershipStatus;
   };

@@ -50,7 +50,7 @@ export function AttendanceTracker({
       .filter(
         (m) =>
           m.full_name.toLowerCase().includes(q) ||
-          m.phone.toLowerCase().includes(q) ||
+          (m.phone ? m.phone.toLowerCase().includes(q) : false) ||
           m.email.toLowerCase().includes(q)
       )
       .slice(0, 5);

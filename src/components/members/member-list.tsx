@@ -50,7 +50,7 @@ export function MemberList({
       const matchesSearch =
         member.full_name.toLowerCase().includes(search) ||
         member.email.toLowerCase().includes(search) ||
-        member.phone.toLowerCase().includes(search);
+        (member.phone ? member.phone.toLowerCase().includes(search) : false);
 
       // Status
       const matchesStatus =
@@ -196,7 +196,7 @@ export function MemberList({
                               {member.full_name}
                             </p>
                             <p className="text-[11px] text-slate-400">
-                              {member.phone} • {member.email}
+                              {member.phone ? `${member.phone} • ` : ""}{member.email}
                             </p>
                           </div>
                         </div>

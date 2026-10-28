@@ -119,7 +119,7 @@ function GymAppContent() {
       (m) =>
         quickSearch.trim() &&
         (m.full_name.toLowerCase().includes(quickSearch.toLowerCase()) ||
-          m.phone.toLowerCase().includes(quickSearch.toLowerCase()) ||
+          (m.phone ? m.phone.toLowerCase().includes(quickSearch.toLowerCase()) : false) ||
           m.email.toLowerCase().includes(quickSearch.toLowerCase()))
     )
     .slice(0, 6);

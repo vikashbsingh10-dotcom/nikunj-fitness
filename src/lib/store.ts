@@ -359,10 +359,11 @@ export class GymStore {
             id: newMember.id,
             full_name: newMember.full_name,
             email: newMember.email,
-            phone: newMember.phone,
+            phone: newMember.phone || null,
             emergency_contact: newMember.emergency_contact,
             gender: newMember.gender,
             plan_id: newMember.plan_id,
+            custom_fee: newMember.custom_fee,
             start_date: newMember.start_date,
             end_date: newMember.end_date,
             status: newMember.status,
@@ -461,7 +462,8 @@ export class GymStore {
   static async renewMember(
     memberId: string,
     planId: string,
-    paymentMethod: Payment["payment_method"]
+    paymentMethod: Payment["payment_method"],
+    customAmount?: number
   ): Promise<{ member: Member; payment: Payment }> {
     const member = await this.getMemberById(memberId);
     if (!member) throw new Error("Member not found");
@@ -479,17 +481,21 @@ export class GymStore {
     newEndDateObj.setDate(newEndDateObj.getDate() + plan.duration_days);
     const newEndDate = newEndDateObj.toISOString().split("T")[0];
 
+    const finalAmount =
+      typeof customAmount === "number" && !isNaN(customAmount) ? customAmount : plan.price;
+
     const updatedMember = await this.updateMember(memberId, {
       plan_id: planId,
       end_date: newEndDate,
       status: "active",
-      notes: `${member.notes || ""}\nRenewed on ${now.toISOString().split("T")[0]} with ${plan.name}.`.trim(),
+      custom_fee: finalAmount,
+      notes: `${member.notes || ""}\nRenewed on ${now.toISOString().split("T")[0]} with ${plan.name} at ₹${finalAmount}.`.trim(),
     });
 
     const payment = await this.addPayment({
       member_id: memberId,
       plan_id: planId,
-      amount: plan.price,
+      amount: finalAmount,
       payment_method: paymentMethod,
       notes: `Membership Renewal: ${plan.name}`,
     });

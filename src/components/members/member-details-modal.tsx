@@ -5,6 +5,7 @@ import { Member, Plan, PaymentMethod, Payment, Attendance } from "@/types";
 import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
+import { Input } from "../ui/input";
 import { formatDate, formatDateTime, formatCurrency, getDaysRemaining } from "@/lib/utils";
 import { GymStore } from "@/lib/store";
 import { useToast } from "../ui/toast-context";
@@ -46,9 +47,27 @@ export function MemberDetailsModal({
 
   // Renewal form state
   const [renewalPlanId, setRenewalPlanId] = useState<string>(member?.plan_id || "");
-  const [renewalPaymentMethod, setRenewalPaymentMethod] = useState<PaymentMethod>("credit_card");
+  const [renewalCustomFee, setRenewalCustomFee] = useState<number>(1499);
+  const [renewalPaymentMethod, setRenewalPaymentMethod] = useState<PaymentMethod>("upi");
   const [isRenewing, setIsRenewing] = useState(false);
   const [isSendingReminder, setIsSendingReminder] = useState(false);
+
+  // Sync renewal custom fee when plan or member changes
+  React.useEffect(() => {
+    if (member) {
+      setRenewalPlanId(member.plan_id);
+      const pl = plans.find((p) => p.id === member.plan_id);
+      setRenewalCustomFee(member.custom_fee || pl?.price || 1499);
+    }
+  }, [member, plans]);
+
+  const handleRenewalPlanSelect = (planId: string) => {
+    setRenewalPlanId(planId);
+    const pl = plans.find((p) => p.id === planId);
+    if (pl) {
+      setRenewalCustomFee(pl.price);
+    }
+  };
 
   if (!member) return null;
 
@@ -97,10 +116,10 @@ export function MemberDetailsModal({
     if (!renewalPlanId) return;
     setIsRenewing(true);
     try {
-      await GymStore.renewMember(member.id, renewalPlanId, renewalPaymentMethod);
+      await GymStore.renewMember(member.id, renewalPlanId, renewalPaymentMethod, Number(renewalCustomFee));
       toast.success(
         `Membership renewed for ${member.full_name}!`,
-        "Receipt created and sent to member's email."
+        `Renewed at ${formatCurrency(renewalCustomFee)}. Receipt sent to member's email.`
       );
       onDataUpdated();
       setActiveTab("overview");
@@ -189,10 +208,15 @@ export function MemberDetailsModal({
                   Current Membership
                 </span>
                 <p className="text-sm font-bold text-slate-900 mt-0.5">{member.plan?.name || "Standard Plan"}</p>
-                <p className="text-slate-500 mt-1">
-                  Valid from <span className="font-medium text-slate-800">{formatDate(member.start_date)}</span> to{" "}
-                  <span className="font-medium text-slate-800">{formatDate(member.end_date)}</span>
-                </p>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-slate-500">
+                    Valid: <span className="font-medium text-slate-800">{formatDate(member.start_date)}</span> —{" "}
+                    <span className="font-medium text-slate-800">{formatDate(member.end_date)}</span>
+                  </span>
+                  <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.2 rounded-full">
+                    Agreed Fee: {formatCurrency(member.custom_fee || member.plan?.price || 0)}
+                  </span>
+                </div>
               </div>
               <Button
                 size="sm"
@@ -221,7 +245,7 @@ export function MemberDetailsModal({
               <span className="text-slate-400 text-[11px] flex items-center gap-1.5">
                 <Phone className="h-3 w-3" /> Phone Number
               </span>
-              <p className="font-semibold text-slate-800 mt-1">{member.phone}</p>
+              <p className="font-semibold text-slate-800 mt-1">{member.phone || "Not provided"}</p>
             </div>
 
             <div className="p-3 rounded-lg border border-slate-100 bg-white sm:col-span-2">
@@ -283,15 +307,44 @@ export function MemberDetailsModal({
             <label className="text-xs font-bold text-slate-800">Select Renewal Plan *</label>
             <select
               value={renewalPlanId}
-              onChange={(e) => setRenewalPlanId(e.target.value)}
+              onChange={(e) => handleRenewalPlanSelect(e.target.value)}
               className="mt-1 w-full h-10 rounded-xl border-2 border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-900 shadow-xs focus-visible:outline-none focus-visible:border-slate-900"
             >
               {plans.map((p) => (
                 <option key={p.id} value={p.id}>
-                  {p.name} — {formatCurrency(p.price)} ({p.duration_days} days)
+                  {p.name} — Standard: {formatCurrency(p.price)} ({p.duration_days} days)
                 </option>
               ))}
             </select>
+          </div>
+
+          {/* 🌟 OWNER CUSTOM RENEWAL FEE 🌟 */}
+          <div className="p-3.5 rounded-xl bg-amber-50/90 border-2 border-amber-300">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-extrabold text-amber-950 flex items-center gap-1.5">
+                <span>Renewal Fee Charged (₹) *</span>
+                <span className="text-[10px] bg-amber-200 text-amber-900 font-extrabold px-1.5 py-0.5 rounded tracking-wide uppercase">
+                  Custom Fee
+                </span>
+              </label>
+              <span className="text-[11px] text-amber-800 font-semibold">
+                Standard: {formatCurrency(plans.find((p) => p.id === renewalPlanId)?.price || 0)}
+              </span>
+            </div>
+            <div className="mt-2 relative">
+              <span className="absolute left-3 top-2.5 text-xs font-bold text-slate-600">₹</span>
+              <Input
+                type="number"
+                min="0"
+                step="1"
+                value={renewalCustomFee}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRenewalCustomFee(parseFloat(e.target.value) || 0)}
+                className="pl-8 text-sm font-extrabold text-slate-900 bg-white border-2 border-amber-300 focus-visible:border-slate-900"
+              />
+            </div>
+            <p className="text-[10px] text-amber-900 mt-1.5 font-medium">
+              Owner can set any custom negotiated fee for this renewal. Receipt will show this exact amount.
+            </p>
           </div>
 
           <div>
