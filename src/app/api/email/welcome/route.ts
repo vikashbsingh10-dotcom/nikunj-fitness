@@ -4,7 +4,7 @@ import { sendWelcomeEmail } from "@/lib/resend";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { to, name, planName, startDate, endDate, gymName } = body;
+    const { to, name, planName, startDate, endDate, customFee, gymName } = body;
 
     if (!to || !name) {
       return NextResponse.json({ error: "Missing required fields: to, name" }, { status: 400 });
@@ -16,6 +16,7 @@ export async function POST(request: Request) {
       planName: planName || "Standard Membership",
       startDate: startDate || new Date().toISOString().split("T")[0],
       endDate: endDate || "N/A",
+      customFee: typeof customFee === "number" ? customFee : undefined,
       gymName: gymName || "Nikunj Fitness Club",
     });
 

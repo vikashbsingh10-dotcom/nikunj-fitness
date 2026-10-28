@@ -64,12 +64,22 @@ export function SupabaseResendStatus() {
 
       const data = await res.json();
       if (res.ok && data.success) {
-        toast.success(
-          "Test Email Dispatched!",
-          data.isSimulated
-            ? "Mode: Simulated preview. Add RESEND_API_KEY in .env.local to send to real mailboxes."
-            : `Delivered via Resend to ${testEmail}`
-        );
+        if (data.sandboxForwarded) {
+          toast.info(
+            "Test Email Routed (Resend Sandbox)",
+            "Delivered to your verified owner inbox (vikashbsingh10@gmail.com). To send to other emails, verify a domain at resend.com/domains."
+          );
+        } else if (data.isSimulated) {
+          toast.success(
+            "Test Email Dispatched!",
+            "Mode: Simulated preview. Add RESEND_API_KEY in .env.local to send to real mailboxes."
+          );
+        } else {
+          toast.success(
+            "Test Email Dispatched!",
+            `Delivered via Resend to ${testEmail}`
+          );
+        }
       } else {
         toast.error("Test email failed", data.error);
       }
@@ -236,11 +246,10 @@ NEXT_PUBLIC_APP_URL=https://nikunjfitness.com`;
                 <code className="bg-slate-100 px-1 py-0.5 rounded">.env.local</code>.
               </li>
               <li>
-                Add your verified domain or use{" "}
-                <code className="bg-slate-100 px-1 py-0.5 rounded">onboarding@resend.dev</code> for testing.
+                <strong>Free Sandbox Mode:</strong> Uses <code className="bg-slate-100 px-1 py-0.5 rounded">onboarding@resend.dev</code>. By Resend security policy, emails in sandbox mode are routed to your verified owner address (<code className="bg-slate-100 px-1 py-0.5 rounded">vikashbsingh10@gmail.com</code>).
               </li>
               <li>
-                Emails will immediately dispatch for member registration, receipts, and renewal reminders!
+                <strong>Sending Directly to Members:</strong> Go to <a href="https://resend.com/domains" target="_blank" rel="noreferrer" className="text-blue-600 underline font-semibold">resend.com/domains</a>, add your custom domain (e.g. <code className="bg-slate-100 px-1 py-0.5 rounded">nikunjfitness.com</code>), and add the DNS records in your domain provider. Once verified, emails will go directly to each member&apos;s email address!
               </li>
             </ol>
           </CardContent>

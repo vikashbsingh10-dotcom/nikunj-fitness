@@ -338,7 +338,11 @@ export class GymStore {
         method: Payment["payment_method"];
       };
     }
-  ): Promise<{ member: Member; payment?: Payment }> {
+  ): Promise<{
+    member: Member;
+    payment?: Payment;
+    emailResult?: { success: boolean; sandboxForwarded?: boolean; warning?: string; error?: string };
+  }> {
     const id = crypto.randomUUID();
     const status = computeMembershipStatus(data.end_date);
     const now = new Date().toISOString();
@@ -390,11 +394,12 @@ export class GymStore {
       });
     }
 
-    // Trigger Welcome Email in background
+    // Trigger Welcome Email
+    let emailResult: { success: boolean; sandboxForwarded?: boolean; warning?: string; error?: string } | undefined;
     try {
       const plans = await this.getPlans();
       const planName = plans.find((p) => p.id === newMember.plan_id)?.name || "Gym Membership";
-      fetch("/api/email/welcome", {
+      const emailRes = await fetch("/api/email/welcome", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -403,13 +408,17 @@ export class GymStore {
           planName,
           startDate: newMember.start_date,
           endDate: newMember.end_date,
+          customFee: newMember.custom_fee,
         }),
-      }).catch((e) => console.log("Email trigger notice:", e));
+      });
+      if (emailRes.ok) {
+        emailResult = await emailRes.json();
+      }
     } catch (e) {
       console.warn("Could not fire welcome email:", e);
     }
 
-    return { member: newMember, payment: createdPayment };
+    return { member: newMember, payment: createdPayment, emailResult };
   }
 
   static async updateMember(id: string, updates: Partial<Member>): Promise<Member> {

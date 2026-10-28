@@ -78,7 +78,7 @@ export function MemberRegistrationModal({
 
     setLoading(true);
     try {
-      await GymStore.registerMember({
+      const { emailResult } = await GymStore.registerMember({
         full_name: fullName,
         email,
         phone: phone || undefined,
@@ -97,10 +97,22 @@ export function MemberRegistrationModal({
             : undefined,
       });
 
-      toast.success(
-        `Member ${fullName} registered!`,
-        `Assigned to ${selectedPlan?.name} at ${formatCurrency(customFee)}. Confirmation email dispatched.`
-      );
+      if (emailResult?.sandboxForwarded) {
+        toast.info(
+          `Member ${fullName} saved in Supabase!`,
+          `⚠️ Resend Test Mode: Welcome email forwarded to verified owner inbox (vikashbsingh10@gmail.com). To send directly to ${email}, verify a custom domain at resend.com/domains.`
+        );
+      } else if (emailResult?.success) {
+        toast.success(
+          `Member ${fullName} registered!`,
+          `Assigned to ${selectedPlan?.name} at ${formatCurrency(customFee)}. Confirmation email sent to ${email}.`
+        );
+      } else {
+        toast.success(
+          `Member ${fullName} registered in Supabase!`,
+          `Assigned to ${selectedPlan?.name} at ${formatCurrency(customFee)}.`
+        );
+      }
 
       // Reset form
       setFullName("");
@@ -158,6 +170,9 @@ export function MemberRegistrationModal({
                 className="pl-9 text-xs"
               />
             </div>
+            <p className="text-[10px] text-amber-600 mt-1 leading-tight">
+              ⚠️ In Resend free mode, confirmation email is routed to owner (vikashbsingh10@gmail.com) until domain is verified.
+            </p>
           </div>
           <div>
             <label className="text-xs font-semibold text-slate-700">Phone Number (Optional)</label>
