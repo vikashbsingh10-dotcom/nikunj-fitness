@@ -1,3 +1,20 @@
+export type UserRole = "admin" | "staff";
+
+export interface AppUser {
+  id: string;
+  email: string;
+  username?: string;
+  full_name: string;
+  role: UserRole;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface StoredStaffUser extends AppUser {
+  password_hash?: string;
+  plain_password?: string; // Stored securely for staff login lookup
+}
+
 export type MembershipStatus = "active" | "expiring" | "expired" | "inactive";
 
 export type PaymentMethod = "credit_card" | "debit_card" | "cash" | "bank_transfer" | "upi" | "stripe";

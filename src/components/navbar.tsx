@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { AppUser } from "@/types";
 import {
   Dumbbell,
   Users,
@@ -13,10 +14,13 @@ import {
   Menu,
   X,
   ArrowLeft,
+  UserCog,
+  LogOut,
 } from "lucide-react";
 import { Button } from "./ui/button";
+import { Badge } from "./ui/badge";
 
-export type NavTab = "dashboard" | "members" | "attendance" | "plans" | "payments" | "settings";
+export type NavTab = "dashboard" | "members" | "attendance" | "plans" | "payments" | "users" | "settings";
 
 interface NavbarProps {
   activeTab: NavTab;
@@ -24,6 +28,8 @@ interface NavbarProps {
   onOpenNewMember: () => void;
   onOpenQuickCheckIn: () => void;
   previousTab?: NavTab;
+  currentUser: AppUser | null;
+  onLogout: () => void;
 }
 
 export function Navbar({
@@ -32,6 +38,8 @@ export function Navbar({
   onOpenNewMember,
   onOpenQuickCheckIn,
   previousTab = "dashboard",
+  currentUser,
+  onLogout,
 }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -41,6 +49,9 @@ export function Navbar({
     { id: "attendance", label: "Attendance", icon: <QrCode className="h-4 w-4" /> },
     { id: "plans", label: "Plans (₹)", icon: <Layers className="h-4 w-4" /> },
     { id: "payments", label: "Payments (₹)", icon: <CreditCard className="h-4 w-4" /> },
+    ...(currentUser?.role === "admin"
+      ? [{ id: "users" as NavTab, label: "Users & Staff", icon: <UserCog className="h-4 w-4" /> }]
+      : []),
     { id: "settings", label: "Config & Docs", icon: <Settings className="h-4 w-4" /> },
   ];
 
@@ -137,6 +148,40 @@ export function Navbar({
             <ArrowLeft className="h-4 w-4 stroke-[2.5] group-hover:-translate-x-0.5 transition-transform" />
             <span>{activeTab === "dashboard" ? "Back" : "Back to Home"}</span>
           </button>
+
+          {/* 👤 Logged-in User Profile & Sign Out 👤 */}
+          {currentUser && (
+            <div className="flex items-center gap-2 pl-3 border-l border-slate-200">
+              <div className="text-right hidden xl:block">
+                <p className="text-xs font-bold text-slate-900 leading-tight">
+                  {currentUser.full_name || currentUser.email}
+                </p>
+                <p className="text-[10px] text-slate-500 font-medium">
+                  {currentUser.role === "admin" ? "Master Admin" : "Staff User"}
+                </p>
+              </div>
+              <Badge
+                variant={currentUser.role === "admin" ? "default" : "secondary"}
+                className={`text-[9px] font-extrabold uppercase px-1.5 py-0.5 ${
+                  currentUser.role === "admin"
+                    ? "bg-indigo-600 text-white hover:bg-indigo-700"
+                    : "bg-emerald-100 text-emerald-800"
+                }`}
+              >
+                {currentUser.role}
+              </Badge>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onLogout}
+                title="Sign Out of Portal"
+                className="h-9 px-2 text-xs text-slate-500 hover:text-red-600 hover:bg-red-50 gap-1.5 cursor-pointer"
+              >
+                <LogOut className="h-4 w-4 text-slate-500 hover:text-red-600" />
+                <span className="hidden lg:inline text-[11px] font-semibold">Sign Out</span>
+              </Button>
+            </div>
+          )}
         </div>
 
         {/* Mobile menu toggle & quick actions */}
@@ -215,6 +260,27 @@ export function Navbar({
                 {item.label}
               </button>
             ))}
+
+            {currentUser && (
+              <div className="pt-3 mt-2 border-t border-slate-100 flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-bold text-slate-900">{currentUser.full_name || currentUser.email}</p>
+                  <p className="text-[10px] text-slate-500 uppercase font-semibold">{currentUser.role} Account</p>
+                </div>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    onLogout();
+                  }}
+                  className="text-xs h-8 text-red-600 border-red-200 hover:bg-red-50 gap-1.5"
+                >
+                  <LogOut className="h-3.5 w-3.5" />
+                  Sign Out
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       )}

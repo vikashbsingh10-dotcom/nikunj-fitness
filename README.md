@@ -22,7 +22,18 @@ Engineered for real-world gym operations: fast 1-tap front-desk check-ins, autom
 
 ## ⚡ Key Highlights & Features
 
-### 1. 👥 Member Registration & Directory
+### 1. 🔐 Security, Authentication & Role-Based Access (RBAC)
+- **Gatekeeper Login Protection:** Without logging in, the entire portal is strictly inaccessible. Visitors are greeted by a branded, encrypted authentication screen.
+- **Primary Master Admin Credentials:**
+  - **Email / Username:** `Vikashbsingh10@gmail.com`
+  - **Password:** `Vikram@3000`
+  - **Role:** `Master Administrator`
+- **Role-Based Access Control (RBAC):**
+  - **Administrator:** Full access to all gym operations **PLUS exclusive access to the "Users & Staff" management tab** to create, enable, disable, or delete staff logins.
+  - **Staff / Front Desk:** Access to member registrations, attendance check-ins, fee billing, and receipts. The user management feature is hidden and strictly blocked.
+- **Instant Staff Provisioning:** Admin can create new staff logins with custom usernames/emails and passwords. New staff can log in immediately.
+
+### 2. 👥 Member Registration & Directory
 - **Custom Owner Fee Structure:** Standard plan duration (e.g. 30, 90, 365 days) is preserved, but the gym owner can customize the exact fee charged per member at registration and renewal.
 - **Optional Phone Numbers:** Flexible member profiles where mobile number is optional.
 - **Instant Search & Filters:** Real-time search across member names, emails, and phone numbers with status pills (🟢 *Active*, 🟡 *Expiring Soon*, 🔴 *Expired*).
@@ -169,9 +180,11 @@ Open [http://localhost:3000](http://localhost:3000) (or `http://localhost:3001` 
    - `members`: Profiles with full contact info, optional phone, owner `custom_fee`, validity dates, and status triggers.
    - `payments`: Digital transaction history, receipt IDs, and payment methods.
    - `attendances`: Daily entry timestamps with member references.
+   - `staff_users`: System user credentials, front-desk accounts, and administrative roles.
    - `email_logs`: Message audit log.
    - **Row Level Security (RLS)** policies enabled across all tables.
 5. In your Supabase Project Settings under **API**, copy the **Project URL** and **Anon Public Key** into your `.env.local`.
+6. *(Recommended)* In Supabase Dashboard, go to **Authentication** > **Providers** > **Email** and turn OFF **Confirm email**. This allows newly created staff accounts to sign in immediately without needing email link verification.
 
 ---
 

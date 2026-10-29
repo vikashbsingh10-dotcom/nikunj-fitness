@@ -70,6 +70,17 @@ CREATE TABLE IF NOT EXISTS public.email_logs (
     metadata JSONB DEFAULT '{}'::jsonb
 );
 
+-- 7. CREATE TABLE: staff_users (Admin & Staff Accounts)
+CREATE TABLE IF NOT EXISTS public.staff_users (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    email VARCHAR(255) UNIQUE NOT NULL,
+    username VARCHAR(100),
+    full_name VARCHAR(150) NOT NULL,
+    role VARCHAR(50) NOT NULL DEFAULT 'staff' CHECK (role IN ('admin', 'staff')),
+    is_active BOOLEAN NOT NULL DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
 -- ==============================================================================
 -- INDEXES FOR PERFORMANCE
 -- ==============================================================================
@@ -90,6 +101,7 @@ ALTER TABLE public.members ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.payments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.attendances ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.email_logs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.staff_users ENABLE ROW LEVEL SECURITY;
 
 -- Allow authenticated users & service role full CRUD operations
 -- (Also allows anonymous key read/write for demo/staff gym desk deployments)
@@ -98,6 +110,7 @@ CREATE POLICY "Allow anon read/write members" ON public.members FOR ALL USING (t
 CREATE POLICY "Allow anon read/write payments" ON public.payments FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow anon read/write attendances" ON public.attendances FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow anon read/write email_logs" ON public.email_logs FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow anon read/write staff_users" ON public.staff_users FOR ALL USING (true) WITH CHECK (true);
 
 -- ==============================================================================
 -- TRIGGERS & FUNCTIONS
@@ -174,4 +187,12 @@ VALUES
     (uuid_generate_v4(), 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', timezone('utc'::text, now() - INTERVAL '4 hours'), 'Morning workout'),
     (uuid_generate_v4(), 'dddddddd-dddd-dddd-dddd-dddddddddddd', timezone('utc'::text, now() - INTERVAL '1 day 3 hours'), 'Evening session')
 ON CONFLICT DO NOTHING;
+
+-- Initial Master Administrator Seed
+INSERT INTO public.staff_users (id, email, full_name, role, is_active)
+VALUES
+    (uuid_generate_v4(), 'vikashbsingh10@gmail.com', 'Vikash Singh (Master Admin)', 'admin', true),
+    (uuid_generate_v4(), 'frontdesk@nikunjfitness.com', 'Front Desk Staff', 'staff', true)
+ON CONFLICT (email) DO NOTHING;
+
 

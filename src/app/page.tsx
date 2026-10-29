@@ -17,20 +17,47 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ToastProvider, useToast } from "@/components/ui/toast-context";
+import { LoginPage } from "@/components/auth/login-page";
+import { UserManagement } from "@/components/users/user-management";
+import { AuthService } from "@/lib/auth";
 import { GymStore } from "@/lib/store";
-import { Member, Plan, Payment, Attendance, DashboardMetrics } from "@/types";
-import { Search, QrCode, RotateCw, ArrowLeft } from "lucide-react";
+import { Member, Plan, Payment, Attendance, DashboardMetrics, AppUser } from "@/types";
+import { Search, QrCode, RotateCw, ArrowLeft, Dumbbell } from "lucide-react";
 
 function GymAppContent() {
   const { toast } = useToast();
+  const [currentUser, setCurrentUser] = useState<AppUser | null>(null);
+  const [authChecked, setAuthChecked] = useState(false);
+
   const [activeTab, setActiveTab] = useState<NavTab>("dashboard");
   const [previousTab, setPreviousTab] = useState<NavTab>("dashboard");
   const [loading, setLoading] = useState(true);
 
+  // Check initial authentication
+  useEffect(() => {
+    const user = AuthService.getCurrentUser();
+    queueMicrotask(() => {
+      setCurrentUser(user);
+      setAuthChecked(true);
+    });
+  }, []);
+
   const handleTabChange = (newTab: NavTab) => {
+    // If not admin and trying to open users tab, redirect to dashboard
+    if (newTab === "users" && currentUser?.role !== "admin") {
+      toast.error("Access Restricted", "Staff accounts cannot access User Management.");
+      return;
+    }
     setPreviousTab(activeTab);
     setActiveTab(newTab);
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleLogout = async () => {
+    await AuthService.logout();
+    setCurrentUser(null);
+    setActiveTab("dashboard");
+    toast.info("Signed Out", "You have been logged out of the portal.");
   };
 
   // Data states
@@ -60,6 +87,7 @@ function GymAppContent() {
   const [quickSearch, setQuickSearch] = useState("");
 
   const loadAllData = useCallback(async () => {
+    if (!currentUser) return;
     try {
       const [allPlans, allMembers, allPayments, allAttendances, dashMetrics] = await Promise.all([
         GymStore.getPlans(),
@@ -79,9 +107,10 @@ function GymAppContent() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [currentUser]);
 
   useEffect(() => {
+    if (!currentUser) return;
     let ignore = false;
     (async () => {
       try {
@@ -111,7 +140,7 @@ function GymAppContent() {
     return () => {
       ignore = true;
     };
-  }, []);
+  }, [currentUser]);
 
   // Action handlers
   const handleOpenMemberDetails = (member: Member) => {
@@ -152,6 +181,24 @@ function GymAppContent() {
     )
     .slice(0, 6);
 
+  // 1. Loading screen while checking auth
+  if (!authChecked) {
+    return (
+      <div className="min-h-screen w-full flex flex-col items-center justify-center bg-slate-950 text-white">
+        <div className="h-14 w-14 rounded-2xl bg-emerald-500 text-slate-950 flex items-center justify-center shadow-xl shadow-emerald-500/20 animate-pulse mb-4">
+          <Dumbbell className="h-7 w-7" />
+        </div>
+        <p className="text-sm font-bold text-slate-200">Nikunj Fitness</p>
+        <p className="text-xs text-slate-400 mt-1">Verifying access session...</p>
+      </div>
+    );
+  }
+
+  // 2. Unauthenticated: Render Login Page (blocks access to entire site!)
+  if (!currentUser) {
+    return <LoginPage onLoginSuccess={(user) => setCurrentUser(user)} />;
+  }
+
   return (
     <div className="min-h-screen bg-slate-50/50 flex flex-col font-sans">
       {/* Top Navbar */}
@@ -161,6 +208,8 @@ function GymAppContent() {
         previousTab={previousTab}
         onOpenNewMember={() => setNewMemberModalOpen(true)}
         onOpenQuickCheckIn={() => setQuickCheckInModalOpen(true)}
+        currentUser={currentUser}
+        onLogout={handleLogout}
       />
 
       {/* Main Content Area */}
@@ -262,6 +311,19 @@ function GymAppContent() {
                   plans={plans}
                   onPaymentRecorded={loadAllData}
                 />
+              </div>
+            )}
+
+            {/* TAB: USERS & STAFF MANAGEMENT (ADMIN ONLY) */}
+            {activeTab === "users" && (
+              <div className="animate-in fade-in duration-150">
+                {currentUser.role === "admin" ? (
+                  <UserManagement currentUser={currentUser} />
+                ) : (
+                  <div className="p-8 text-center text-xs text-slate-500">
+                    Access restricted to Administrator.
+                  </div>
+                )}
               </div>
             )}
 
