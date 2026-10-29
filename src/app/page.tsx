@@ -22,7 +22,7 @@ import { UserManagement } from "@/components/users/user-management";
 import { AuthService } from "@/lib/auth";
 import { GymStore } from "@/lib/store";
 import { Member, Plan, Payment, Attendance, DashboardMetrics, AppUser } from "@/types";
-import { Search, QrCode, RotateCw, ArrowLeft, Dumbbell } from "lucide-react";
+import { Search, QrCode, RotateCw, ArrowLeft, Dumbbell, LogOut } from "lucide-react";
 
 function GymAppContent() {
   const { toast } = useToast();
@@ -244,6 +244,57 @@ function GymAppContent() {
             {/* TAB: DASHBOARD */}
             {activeTab === "dashboard" && (
               <div className="space-y-6 animate-in fade-in duration-150">
+                {/* 🌟 HOME PAGE WELCOME HEADER & PROMINENT LOG OUT BUTTON 🌟 */}
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
+                  <div className="flex items-center gap-3">
+                    <div className="h-11 w-11 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-sm shadow-xs shrink-0">
+                      {currentUser.full_name ? currentUser.full_name.slice(0, 2).toUpperCase() : "NF"}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h1 className="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">
+                          Welcome, {currentUser.full_name || "Admin"}
+                        </h1>
+                        <Badge
+                          variant={currentUser.role === "admin" ? "default" : "secondary"}
+                          className={`text-[9px] font-extrabold uppercase px-1.5 py-0.5 ${
+                            currentUser.role === "admin"
+                              ? "bg-indigo-600 text-white"
+                              : "bg-emerald-100 text-emerald-800"
+                          }`}
+                        >
+                          {currentUser.role === "admin" ? "Master Admin" : "Staff User"}
+                        </Badge>
+                      </div>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        Nikunj Fitness Portal • Facility Overview &amp; Live Monitoring
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={loadAllData}
+                      className="text-xs h-9 px-3 gap-1.5 text-slate-600 border-slate-200 hover:bg-slate-50 cursor-pointer"
+                    >
+                      <RotateCw className="h-3.5 w-3.5" />
+                      Refresh
+                    </Button>
+
+                    {/* 🔴 BIG PROMINENT LOG OUT BUTTON ON HOME PAGE 🔴 */}
+                    <button
+                      onClick={handleLogout}
+                      title="Log out of system"
+                      className="flex items-center justify-center gap-2 h-9 px-4 rounded-xl text-xs font-bold border-2 border-red-300 bg-red-50 text-red-700 hover:bg-red-600 hover:text-white hover:border-red-600 shadow-xs active:scale-95 transition-all cursor-pointer group"
+                    >
+                      <LogOut className="h-4 w-4 stroke-[2.2] group-hover:rotate-12 transition-transform" />
+                      <span>Log Out</span>
+                    </button>
+                  </div>
+                </div>
+
                 {/* 1. Metric Stats */}
                 <StatsCards
                   metrics={metrics}
