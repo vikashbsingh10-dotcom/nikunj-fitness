@@ -2,10 +2,10 @@
 
 import React, { useState } from "react";
 import { AppUser } from "@/types";
-import { AuthService, MASTER_ADMIN_EMAIL, MASTER_ADMIN_PASSWORD } from "@/lib/auth";
+import { AuthService } from "@/lib/auth";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { Dumbbell, Lock, Mail, Eye, EyeOff, ShieldCheck, ArrowRight, AlertCircle, KeyRound } from "lucide-react";
+import { Dumbbell, Lock, Mail, Eye, EyeOff, ShieldCheck, ArrowRight, AlertCircle } from "lucide-react";
 
 interface LoginPageProps {
   onLoginSuccess: (user: AppUser) => void;
@@ -36,12 +36,6 @@ export function LoginPage({ onLoginSuccess }: LoginPageProps) {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleFillAdminCredentials = () => {
-    setEmail(MASTER_ADMIN_EMAIL);
-    setPassword(MASTER_ADMIN_PASSWORD);
-    setErrorMessage(null);
   };
 
   return (
@@ -151,38 +145,6 @@ export function LoginPage({ onLoginSuccess }: LoginPageProps) {
               )}
             </Button>
           </form>
-
-          {/* Master Admin Quick Credentials Box */}
-          <div className="mt-6 pt-5 border-t border-slate-800/80">
-            <div className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800 text-xs space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="font-semibold text-slate-300 flex items-center gap-1.5">
-                  <KeyRound className="h-3.5 w-3.5 text-amber-400" />
-                  Primary Admin Credentials
-                </span>
-                <button
-                  type="button"
-                  onClick={handleFillAdminCredentials}
-                  className="text-[11px] font-bold text-emerald-400 hover:text-emerald-300 underline cursor-pointer"
-                >
-                  Auto-Fill
-                </button>
-              </div>
-              <div className="font-mono text-[11px] text-slate-400 bg-slate-900/90 p-2 rounded-lg border border-slate-800 space-y-1">
-                <div>
-                  <span className="text-slate-500">Email:</span>{" "}
-                  <span className="text-slate-200 font-semibold">{MASTER_ADMIN_EMAIL}</span>
-                </div>
-                <div>
-                  <span className="text-slate-500">Password:</span>{" "}
-                  <span className="text-slate-200 font-semibold">{MASTER_ADMIN_PASSWORD}</span>
-                </div>
-              </div>
-              <p className="text-[10px] text-slate-500">
-                Logged-in Admin can add new staff usernames &amp; passwords from the <strong>Users &amp; Staff</strong> tab.
-              </p>
-            </div>
-          </div>
         </div>
 
         {/* Footer */}
@@ -194,3 +156,4 @@ export function LoginPage({ onLoginSuccess }: LoginPageProps) {
     </div>
   );
 }
+

@@ -149,7 +149,7 @@ export function Navbar({
             <span>{activeTab === "dashboard" ? "Back" : "Back to Home"}</span>
           </button>
 
-          {/* 👤 Logged-in User Profile & Sign Out 👤 */}
+          {/* 👤 Logged-in User Profile & Prominent Log Out 👤 */}
           {currentUser && (
             <div className="flex items-center gap-2 pl-3 border-l border-slate-200">
               <div className="text-right hidden xl:block">
@@ -170,16 +170,16 @@ export function Navbar({
               >
                 {currentUser.role}
               </Badge>
-              <Button
-                variant="ghost"
-                size="sm"
+
+              {/* 🚪 PROMINENT LOG OUT BUTTON 🚪 */}
+              <button
                 onClick={onLogout}
-                title="Sign Out of Portal"
-                className="h-9 px-2 text-xs text-slate-500 hover:text-red-600 hover:bg-red-50 gap-1.5 cursor-pointer"
+                title="Log out of Nikunj Fitness"
+                className="flex items-center gap-1.5 h-10 px-3.5 rounded-xl text-xs font-bold border-2 border-red-200 bg-red-50 text-red-700 hover:bg-red-600 hover:text-white hover:border-red-600 shadow-xs transition-all cursor-pointer active:scale-95 group"
               >
-                <LogOut className="h-4 w-4 text-slate-500 hover:text-red-600" />
-                <span className="hidden lg:inline text-[11px] font-semibold">Sign Out</span>
-              </Button>
+                <LogOut className="h-4 w-4 stroke-[2.2] group-hover:rotate-12 transition-transform" />
+                <span>Log Out</span>
+              </button>
             </div>
           )}
         </div>
@@ -203,6 +203,18 @@ export function Navbar({
             >
               <ArrowLeft className="h-3.5 w-3.5" />
               <span>Back</span>
+            </button>
+          )}
+
+          {/* Mobile Log Out Button */}
+          {currentUser && (
+            <button
+              onClick={onLogout}
+              title="Log Out"
+              className="h-9 px-2.5 rounded-lg text-xs font-bold bg-red-50 border border-red-200 text-red-700 flex items-center gap-1 shadow-xs active:scale-95 cursor-pointer"
+            >
+              <LogOut className="h-3.5 w-3.5" />
+              <span className="text-[11px]">Exit</span>
             </button>
           )}
 
