@@ -9,16 +9,9 @@ import { Badge } from "../ui/badge";
 import { formatDate, getDaysRemaining } from "@/lib/utils";
 import {
   Search,
-  Filter,
   UserPlus,
-  Phone,
-  Mail,
-  MoreVertical,
   QrCode,
-  RotateCw,
   ExternalLink,
-  Calendar,
-  CheckCircle2,
   Zap,
 } from "lucide-react";
 
@@ -177,7 +170,6 @@ export function MemberList({
               <tbody className="divide-y divide-slate-100">
                 {filteredMembers.map((member) => {
                   const days = getDaysRemaining(member.end_date);
-                  const isExpired = days < 0;
 
                   return (
                     <tr

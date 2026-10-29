@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Plan, PaymentMethod } from "@/types";
 import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "../ui/dialog";
 import { Button } from "../ui/button";
@@ -8,7 +8,7 @@ import { Input } from "../ui/input";
 import { useToast } from "../ui/toast-context";
 import { GymStore } from "@/lib/store";
 import { formatCurrency } from "@/lib/utils";
-import { User, Phone, Mail, ShieldAlert, CreditCard, Calendar, Check, Send } from "lucide-react";
+import { User, Phone, Mail, ShieldAlert } from "lucide-react";
 
 interface MemberRegistrationModalProps {
   open: boolean;
@@ -32,34 +32,33 @@ export function MemberRegistrationModal({
   const [phone, setPhone] = useState("");
   const [emergencyContact, setEmergencyContact] = useState("");
   const [selectedPlanId, setSelectedPlanId] = useState<string>("");
-  const [customFee, setCustomFee] = useState<number>(1499);
+  const [overrideFee, setOverrideFee] = useState<number | null>(null);
   const [startDate, setStartDate] = useState<string>("");
   const [notes, setNotes] = useState("");
+
+  React.useEffect(() => {
+    if (!open) return;
+    const today = new Date().toISOString().split("T")[0];
+    queueMicrotask(() => {
+      setStartDate((prev) => prev || today);
+    });
+  }, [open]);
+
+  const activePlanId = selectedPlanId || (plans[0]?.id ?? "");
+  const selectedPlan = plans.find((p) => p.id === activePlanId);
+  const customFee = overrideFee !== null ? overrideFee : (selectedPlan?.price ?? 1499);
 
   // Payment states
   const [recordPayment, setRecordPayment] = useState(true);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("upi");
 
-  // Initialize selected plan, default start date and custom fee
-  useEffect(() => {
-    if (!startDate) {
-      setStartDate(new Date().toISOString().split("T")[0]);
-    }
-    if (plans.length > 0 && !selectedPlanId) {
-      setSelectedPlanId(plans[0].id);
-      setCustomFee(plans[0].price);
-    }
-  }, [plans, selectedPlanId, startDate]);
-
   const handlePlanChange = (planId: string) => {
     setSelectedPlanId(planId);
     const plan = plans.find((p) => p.id === planId);
     if (plan) {
-      setCustomFee(plan.price);
+      setOverrideFee(plan.price);
     }
   };
-
-  const selectedPlan = plans.find((p) => p.id === selectedPlanId);
 
   // Calculated end date
   const calculatedEndDate = React.useMemo(() => {
@@ -71,7 +70,7 @@ export function MemberRegistrationModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!fullName || !email || !selectedPlanId) {
+    if (!fullName || !email || !activePlanId) {
       toast.error("Please fill required fields", "Name, email, and plan are mandatory.");
       return;
     }
@@ -83,7 +82,7 @@ export function MemberRegistrationModal({
         email,
         phone: phone || undefined,
         emergency_contact: emergencyContact,
-        plan_id: selectedPlanId,
+        plan_id: activePlanId,
         custom_fee: Number(customFee),
         start_date: startDate,
         end_date: calculatedEndDate,
@@ -120,6 +119,8 @@ export function MemberRegistrationModal({
       setPhone("");
       setEmergencyContact("");
       setNotes("");
+      setSelectedPlanId("");
+      setOverrideFee(null);
       onOpenChange(false);
       onMemberRegistered();
     } catch (err: unknown) {
@@ -206,7 +207,7 @@ export function MemberRegistrationModal({
         <div className="pt-2 border-t border-slate-100">
           <label className="text-xs font-semibold text-slate-700">Select Membership Plan *</label>
           <select
-            value={selectedPlanId}
+            value={activePlanId}
             onChange={(e) => handlePlanChange(e.target.value)}
             className="mt-1 w-full h-9 rounded-lg border border-slate-200 bg-white px-3 py-1 text-xs text-slate-800 shadow-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-900 cursor-pointer"
           >
@@ -238,7 +239,7 @@ export function MemberRegistrationModal({
               min="0"
               step="1"
               value={customFee}
-              onChange={(e) => setCustomFee(parseFloat(e.target.value) || 0)}
+              onChange={(e) => setOverrideFee(parseFloat(e.target.value) || 0)}
               className="pl-8 text-sm font-extrabold text-slate-900 bg-white border-2 border-amber-300 focus-visible:border-slate-900"
               placeholder="Enter fee amount..."
             />

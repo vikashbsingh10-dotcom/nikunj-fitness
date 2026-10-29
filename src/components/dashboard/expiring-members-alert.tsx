@@ -2,33 +2,27 @@
 
 import React, { useState, useMemo } from "react";
 import { Member } from "@/types";
-import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { formatDate, getDaysRemaining, formatCurrency } from "@/lib/utils";
 import {
-  AlertTriangle,
   Mail,
   RotateCw,
   CheckCircle2,
   Phone,
   Zap,
-  Clock,
-  Sparkles,
-  ArrowRight,
 } from "lucide-react";
 import { useToast } from "../ui/toast-context";
 
 interface ExpiringMembersAlertProps {
   members: Member[];
   onRenewMember: (member: Member) => void;
-  onRefresh: () => void;
+  onRefresh?: () => void;
 }
 
 export function ExpiringMembersAlert({
   members,
   onRenewMember,
-  onRefresh,
 }: ExpiringMembersAlertProps) {
   const { toast } = useToast();
   const [sendingId, setSendingId] = useState<string | null>(null);

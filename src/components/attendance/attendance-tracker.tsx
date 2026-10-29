@@ -12,11 +12,8 @@ import { formatDateTime, formatDate } from "@/lib/utils";
 import {
   QrCode,
   Search,
-  CheckCircle2,
   Clock,
   UserCheck,
-  AlertCircle,
-  TrendingUp,
 } from "lucide-react";
 
 interface AttendanceTrackerProps {
@@ -32,14 +29,14 @@ export function AttendanceTracker({
 }: AttendanceTrackerProps) {
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedMemberId, setSelectedMemberId] = useState("");
-  const [checkInNote, setCheckInNote] = useState("Front desk entry");
   const [loading, setLoading] = useState(false);
-
   const [todayStr, setTodayStr] = useState<string>("");
 
   React.useEffect(() => {
-    setTodayStr(new Date().toISOString().split("T")[0]);
+    const today = new Date().toISOString().split("T")[0];
+    queueMicrotask(() => {
+      setTodayStr(today);
+    });
   }, []);
 
   // Filter members matching search for quick check-in
@@ -73,7 +70,7 @@ export function AttendanceTracker({
 
     setLoading(true);
     try {
-      await GymStore.checkInMember(member.id, checkInNote);
+      await GymStore.checkInMember(member.id, "Front desk entry");
       toast.success(
         `Welcome, ${member.full_name}!`,
         `Checked in at ${new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}.`

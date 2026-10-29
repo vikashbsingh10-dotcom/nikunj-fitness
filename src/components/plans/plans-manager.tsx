@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Plan } from "@/types";
-import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
+import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { Input } from "../ui/input";
@@ -10,7 +10,7 @@ import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter } fr
 import { formatCurrency } from "@/lib/utils";
 import { GymStore } from "@/lib/store";
 import { useToast } from "../ui/toast-context";
-import { Layers, Plus, Check, Edit2, ShieldCheck, Clock, Sparkles } from "lucide-react";
+import { Plus, Check, Edit2 } from "lucide-react";
 
 interface PlansManagerProps {
   plans: Plan[];

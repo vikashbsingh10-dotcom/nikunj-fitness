@@ -19,7 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { ToastProvider, useToast } from "@/components/ui/toast-context";
 import { GymStore } from "@/lib/store";
 import { Member, Plan, Payment, Attendance, DashboardMetrics } from "@/types";
-import { Search, QrCode, CheckCircle2, RotateCw, ArrowLeft } from "lucide-react";
+import { Search, QrCode, RotateCw, ArrowLeft } from "lucide-react";
 
 function GymAppContent() {
   const { toast } = useToast();
@@ -82,8 +82,36 @@ function GymAppContent() {
   }, []);
 
   useEffect(() => {
-    loadAllData();
-  }, [loadAllData]);
+    let ignore = false;
+    (async () => {
+      try {
+        const [allPlans, allMembers, allPayments, allAttendances, dashMetrics] = await Promise.all([
+          GymStore.getPlans(),
+          GymStore.getMembers(),
+          GymStore.getPayments(),
+          GymStore.getAttendances(),
+          GymStore.getDashboardMetrics(),
+        ]);
+        if (!ignore) {
+          setPlans(allPlans);
+          setMembers(allMembers);
+          setPayments(allPayments);
+          setAttendances(allAttendances);
+          setMetrics(dashMetrics);
+        }
+      } catch (err) {
+        console.error("Data load error:", err);
+      } finally {
+        if (!ignore) {
+          setLoading(false);
+        }
+      }
+    })();
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   // Action handlers
   const handleOpenMemberDetails = (member: Member) => {

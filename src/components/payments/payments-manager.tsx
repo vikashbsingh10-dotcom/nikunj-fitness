@@ -2,24 +2,20 @@
 
 import React, { useState, useMemo } from "react";
 import { Payment, Member, Plan, PaymentMethod } from "@/types";
-import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
+import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
-import { Badge } from "../ui/badge";
 import { Input } from "../ui/input";
 import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "../ui/dialog";
-import { formatCurrency, formatDate, formatDateTime } from "@/lib/utils";
+import { formatCurrency, formatDate } from "@/lib/utils";
 import { GymStore } from "@/lib/store";
 import { useToast } from "../ui/toast-context";
 import {
-  CreditCard,
   Plus,
   Receipt,
   Search,
   Mail,
   RotateCw,
   Printer,
-  CheckCircle2,
-  IndianRupee,
 } from "lucide-react";
 
 interface PaymentsManagerProps {

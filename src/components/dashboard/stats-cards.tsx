@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import { Users, AlertTriangle, QrCode, IndianRupee, TrendingUp, ArrowUpRight } from "lucide-react";
+import { Users, AlertTriangle, QrCode, IndianRupee } from "lucide-react";
 import { DashboardMetrics } from "@/types";
-import { Card, CardContent } from "../ui/card";
+import { Card } from "../ui/card";
 import { formatCurrency } from "@/lib/utils";
 
 interface StatsCardsProps {

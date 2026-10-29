@@ -10,17 +10,14 @@ import { formatDate, formatDateTime, formatCurrency, getDaysRemaining } from "@/
 import { GymStore } from "@/lib/store";
 import { useToast } from "../ui/toast-context";
 import {
-  User,
   Phone,
   Mail,
   ShieldAlert,
-  Calendar,
   CreditCard,
   QrCode,
   RotateCw,
   Send,
   Clock,
-  CheckCircle2,
 } from "lucide-react";
 
 interface MemberDetailsModalProps {
@@ -45,34 +42,36 @@ export function MemberDetailsModal({
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<"overview" | "renew" | "history">("overview");
 
-  // Renewal form state
-  const [renewalPlanId, setRenewalPlanId] = useState<string>(member?.plan_id || "");
-  const [renewalCustomFee, setRenewalCustomFee] = useState<number>(1499);
+  // Renewal form state with clean render derivation
+  const [overridePlanId, setOverridePlanId] = useState<string | null>(null);
+  const [overrideFee, setOverrideFee] = useState<number | null>(null);
+  const [prevMemberId, setPrevMemberId] = useState<string | undefined>(member?.id);
+
+  if (member?.id !== prevMemberId) {
+    setPrevMemberId(member?.id);
+    setOverridePlanId(null);
+    setOverrideFee(null);
+  }
+
+  const renewalPlanId = overridePlanId ?? (member?.plan_id || "");
+  const defaultPlan = plans.find((p) => p.id === renewalPlanId);
+  const renewalCustomFee = overrideFee ?? (member?.custom_fee || defaultPlan?.price || 1499);
+
   const [renewalPaymentMethod, setRenewalPaymentMethod] = useState<PaymentMethod>("upi");
   const [isRenewing, setIsRenewing] = useState(false);
   const [isSendingReminder, setIsSendingReminder] = useState(false);
 
-  // Sync renewal custom fee when plan or member changes
-  React.useEffect(() => {
-    if (member) {
-      setRenewalPlanId(member.plan_id);
-      const pl = plans.find((p) => p.id === member.plan_id);
-      setRenewalCustomFee(member.custom_fee || pl?.price || 1499);
-    }
-  }, [member, plans]);
-
   const handleRenewalPlanSelect = (planId: string) => {
-    setRenewalPlanId(planId);
+    setOverridePlanId(planId);
     const pl = plans.find((p) => p.id === planId);
     if (pl) {
-      setRenewalCustomFee(pl.price);
+      setOverrideFee(pl.price);
     }
   };
 
   if (!member) return null;
 
   const daysRemaining = getDaysRemaining(member.end_date);
-  const isExpired = daysRemaining < 0;
 
   // Filter member-specific records
   const memberPayments = payments.filter((p) => p.member_id === member.id);
@@ -222,7 +221,7 @@ export function MemberDetailsModal({
                 size="sm"
                 variant="outline"
                 onClick={() => {
-                  setRenewalPlanId(member.plan_id);
+                  handleRenewalPlanSelect(member.plan_id);
                   setActiveTab("renew");
                 }}
                 className="text-xs h-7"
@@ -338,7 +337,7 @@ export function MemberDetailsModal({
                 min="0"
                 step="1"
                 value={renewalCustomFee}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRenewalCustomFee(parseFloat(e.target.value) || 0)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setOverrideFee(parseFloat(e.target.value) || 0)}
                 className="pl-8 text-sm font-extrabold text-slate-900 bg-white border-2 border-amber-300 focus-visible:border-slate-900"
               />
             </div>

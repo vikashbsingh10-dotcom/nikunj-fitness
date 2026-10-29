@@ -13,7 +13,6 @@ import {
   Menu,
   X,
   ArrowLeft,
-  Sparkles,
 } from "lucide-react";
 import { Button } from "./ui/button";
 
